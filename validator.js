@@ -1,4 +1,10 @@
 class VanillaValidator {
+    /**
+     * Key: input to use in query selector
+     * 
+     * Value: rules to validate
+     * @param {Object} rules 
+     */
     setRules(rules) {
         rules = Object.values(rules).map(rule => {
             return rule.split('|').map(rule => {
@@ -13,17 +19,23 @@ class VanillaValidator {
                 return { name, values }
             })
         })
-
-        return rules
+        this.inputs = Object.keys(rules)
+        this.rules = rules
     }
 
     validate() {
-        
-    }
-
-    min (input, min, message = null) {
-        if (document.querySelector(input).value.length < min) {
-            return `${input.getAttribute('van-alias') ?? input.getAttribute('name')} deve ser maior que ${min}`
+        if (typeof this.inputs == 'undefined') {
+            console.error('Must define inputs using VanillaValidator.setRules')
+        }
+        if (typeof this.rules == 'undefined') {
+            console.error('Must define rules using VanillaValidator.setRules')
         }
     }
+
+    // min (input, min, message = null) {
+    //     let input = document.querySelector(input)
+    //     if (input.value.length < min) {
+    //         return `${input.getAttribute('van-alias') ?? input.getAttribute('name')} deve ser maior que ${min}`
+    //     }
+    // }
 }
