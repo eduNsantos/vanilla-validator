@@ -2,7 +2,7 @@ class VanillaValidator {
     constructor() {
         this.fields = []
         this.messages = []
-        this.errors = []
+        this.errors = {}
 
         // this.validate().bind(this.errors)
     }
@@ -62,6 +62,7 @@ class VanillaValidator {
 
     rules(field, ruleName, args) {
         const validationField = document.querySelector(field)
+        const returns = {}
         const rules = {
             required() {
                 if (validationField.value == "") {
@@ -75,7 +76,7 @@ class VanillaValidator {
             },
             max() {
                 if (validationField.value.length > args.options[0]) {
-                    return `O campo ${field} deve ser menor que ${args.options[0]}`
+                    return returns[field] = `O campo ${field} deve ser menor que ${args.options[0]}`
                 }
             },
         }
@@ -88,22 +89,31 @@ class VanillaValidator {
     }
 
     validate() {
-        let message
+        return new Promise((resolve, reject) => {
+            let message
 
-        if (this.allRequiredParametersAreDefined()) {
-            this.errors = []
-            for (let field of this.fields) {
-                for (let rule in field.rules) {
-                    message = this.rules(field.validationField, rule, field.rules[rule])
-                    
-                    if (typeof message != 'undefined') {
-                        this.errors.push(message)
+            if (this.allRequiredParametersAreDefined()) {
+                this.errors = []
+                for (let field of this.fields) {
+                    for (let rule in field.rules) {
+                        message = this.rules(field.validationField, rule, field.rules[rule])
+                        
+                        if (typeof message != 'undefined') {
+                            this.errors[field.validationField] = message
+                            this.errors.length += 1
+                        }
                     }
                 }
             }
-        }
-
-        console.log(this.errors)
+            
+            if (this.errors.length == 0) {
+                resolve(true)
+            } else {
+                reject({
+                    errors: this.errors
+                })
+            }
+        })
     }
 
     allRequiredParametersAreDefined() {

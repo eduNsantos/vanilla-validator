@@ -15,6 +15,14 @@ document.getElementById('form').addEventListener('submit', e => {
     e.preventDefault();
 
     validator.validate()
+    .then(response => {
+        
+        console.log(error)
+    })
+    .catch(error => {
+        // alert('deu ruim')
+        console.warn(error)
+    })
 })
 // document.addEventListener('DOMContentLoaded', e => {
 //     // validator.validate()
